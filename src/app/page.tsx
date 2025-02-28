@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Portfolio = () => {
@@ -18,11 +19,19 @@ const Portfolio = () => {
           Hi, I'm a passionate Software Engineer specializing in C/C++ Systems and Applications Development.
           I love building efficient and secure softwares.
         </p>
-        <a href="/my_cv.pdf" download>
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg shadow-md hover:bg-blue-700 transition">
-            Download My CV
-          </button>
-        </a>
+        <div className="flex justify-center gap-4">
+          <Link href="/my_cv.pdf" download>
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg text-lg shadow-md hover:bg-blue-700 transition">
+              Download My CV
+            </button>
+          </Link>
+
+          <Link href="/blogs">
+            <button className="px-6 py-3 bg-purple-600 text-white rounded-lg text-lg shadow-md hover:bg-purple-700 transition">
+              Read My Posts
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
