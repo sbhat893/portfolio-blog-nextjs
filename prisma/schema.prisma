@@ -18,3 +18,19 @@ model Owner {
   username String @unique
   password String
 }
+
+model Portfolio {
+  id          String  @id @default(uuid())
+  name        String
+  description String
+  profilePicture String
+  cvPath      String
+  createdAt   DateTime @default(now())
+}
+
+model BlogPost {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  createdAt   DateTime @default(now())
+}
