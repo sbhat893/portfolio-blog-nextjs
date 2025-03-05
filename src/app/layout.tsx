@@ -24,7 +24,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
     data.name = "Sumukh Bhat"
   }
   return (
-    <PortfolioProvider data={data}>
+    <PortfolioProvider initialData={data}>
     <html lang="en">
       <body className="bg-gray-50 text-gray-900">
         <header className="p-4 bg-blue-600 text-white text-left text-2xl">

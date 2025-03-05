@@ -1,19 +1,62 @@
-"use client"; // Context must be in a Client Component
+"use client";
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-// Define the context type
-const PortfolioContext = createContext(null);
+// Define the shape of portfolio data
+interface PortfolioData {
+  name: string;
+  description?: string;
+  profilePicture: string;
+  cvPath: string;
+}
 
-export const PortfolioProvider = ({ data, children }: { data: any; children: React.ReactNode }) => {
-  return <PortfolioContext.Provider value={data}>{children}</PortfolioContext.Provider>;
+// Define the shape of the context value
+interface PortfolioContextType {
+  data: PortfolioData | null;
+  loading: boolean;
+  error: string | null;
+}
+
+// Create context with a proper default value
+const PortfolioContext = createContext<PortfolioContextType>({
+  data: null,
+  loading: true,
+  error: null,
+});
+
+// Define props for PortfolioProvider
+type PortfolioProviderProps = {
+  initialData: PortfolioData;
+  children: ReactNode;
 };
 
-// Custom hook to use the context
+export const PortfolioProvider = ({ initialData, children }: PortfolioProviderProps) => {
+  const [data, setData] = useState<PortfolioData | null>(initialData);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!initialData) {
+      fetch("/api/portfolio")
+        .then((res) => res.json())
+        .then((portfolioData) => {
+          setData(portfolioData);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError(err.message);
+          setLoading(false);
+        });
+    }
+  }, [initialData]);
+
+  return (
+    <PortfolioContext.Provider value={{ data, loading, error }}>
+      {children}
+    </PortfolioContext.Provider>
+  );
+};
+
 export const usePortfolio = () => {
-  const context = useContext(PortfolioContext);
-  if (!context) {
-    throw new Error("usePortfolio must be used within a PortfolioProvider");
-  }
-  return context;
+  return useContext(PortfolioContext);
 };

@@ -6,8 +6,8 @@ import React from "react";
 import { usePortfolio } from "@/context/PortfolioContext";
 
 const Portfolio = () => {
-  const data = usePortfolio();
-  
+  const { data, loading, error } = usePortfolio();
+  if (!data) return <div>No portfolio data available</div>;
   if(data.description == null ) {
     data.description = "Hi, I'm a passionate Software Engineer specializing in C/C++ Systems and Applications Development. I love building efficient and secure softwares.";
   }
