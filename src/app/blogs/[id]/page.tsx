@@ -4,9 +4,22 @@ import { blogPosts } from "@/app/blogs/page";
 import { ArrowLeft } from "lucide-react";
 import React from "react";
 
-const BlogPost = async ({ params }: { params: Promise<{ id: string }> }) => {
-    const resolvedParams = await params;
-    const post = blogPosts.find((post) => post.id === resolvedParams.id);
+interface BlogPostProps {
+    params: { id: string };
+}
+
+async function fetchBlogPost(id: string) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/blogs/${id}`, {
+      cache: "no-store",
+    });
+  
+    if (!res.ok) return null;
+    return res.json();
+}
+
+const BlogPost = async ({ params }: BlogPostProps) => {
+    const {id} = await params;
+    const post = await fetchBlogPost(id);
   
     if (!post) {
       notFound();

@@ -1,6 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { v4 as uuidv4 } from "uuid";
+
+type BlogPost = {
+  id: string;
+  title: string;
+  summary: string;
+};
 
 export const blogPosts = [
     {
@@ -19,7 +27,36 @@ export const blogPosts = [
     },
   ];
 
+// Fetch blog posts from API
+const fetchBlogPosts = async () => {
+  const res = await fetch("/api/blogs");
+  if (!res.ok) {
+    throw new Error("Failed to fetch blog posts");
+  }
+  return res.json();
+};
+
 const Blogs = () => {
+
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchBlogPosts()
+      .then((data) => {
+        setPosts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div className="text-white text-xl">Loading...</div>;
+  if (error) return <div className="text-red-500 text-xl">Error: {error}</div>;
+
   return (
     <div className="min-h-screen p-6 bg-gray-100 text-gray-900">
       <div className="max-w-4xl mx-auto">
@@ -29,7 +66,7 @@ const Blogs = () => {
           <p className="text-center text-lg text-gray-600">No posts available.</p>
         ) : (
           <div className="space-y-6">
-            {blogPosts.map((post) => (
+            {posts.map((post: BlogPost) => (
               <div key={post.id} className="p-6 bg-white rounded-lg shadow-lg">
                 <h2 className="text-2xl font-semibold">{post.title}</h2>
                 <p className="text-gray-700 mt-2">{post.summary}</p>
