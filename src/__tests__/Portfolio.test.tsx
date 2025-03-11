@@ -8,6 +8,7 @@ import { PortfolioProvider } from "@/context/PortfolioContext";
 
 // Mock portfolio data
 const mockPortfolioData = {
+  id: 1,
   name: "Sumukh Bhat",
   description: "Software Engineer",
   profilePicture: "profile.jpg",

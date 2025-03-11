@@ -4,9 +4,15 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const portfolios = await prisma.portfolio.findMany();
-    return NextResponse.json(portfolios, { status: 200 });
+    return new Response(JSON.stringify(portfolios), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch portfolios" }, { status: 500 });
+    return new Response(JSON.stringify({ error: "Failed to fetch portfolios" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
