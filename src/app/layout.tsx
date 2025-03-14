@@ -20,16 +20,23 @@ const Layout = async ({ children }: { children: ReactNode }) => {
 
   const data = await fetchPortfolioData();
 
-  if(data.name == null) {
-    data.name = "Sumukh Bhat"
+  if(Array.isArray(data) && data.length ===0) {
+    const sample = {
+      name: "Sumukh Bhat",
+      description: "Hi, I'm a passionate Software Engineer specializing in C/C++ Systems and Applications Development. I love building efficient and secure softwares.",
+      profilePicture: "profile.jpg",
+      cvPath: "my_cv.pdf"
+    };
+    data.push(sample);
   }
+
   return (
-    <PortfolioProvider initialData={data}>
+    <PortfolioProvider initialData={data[0]}>
     <html lang="en">
       <body className="bg-gray-50 text-gray-900">
         <header className="p-4 bg-blue-600 text-white text-left text-2xl">
           <a href="/">
-            {data.name}
+            {data[0].name}
           </a>
         </header>
         

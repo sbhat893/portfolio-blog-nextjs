@@ -16,7 +16,7 @@ export async function GET() {
 // Create a new blog post
 export async function POST(req: Request) {
   try {
-    const { title, content, author } = await req.json(); // Ensure correct field names
+    const { title, summary, content, author } = await req.json(); // Ensure correct field names
 
     if (!title || !content || !author) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     const newPost = await prisma.blogPost.create({
       data: { 
         title, 
+        summary,
         content, 
         author, 
         createdAt: new Date(),
