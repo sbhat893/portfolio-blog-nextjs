@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css"; // Import global styles
 import { ReactNode } from "react";
 import { PortfolioProvider } from "@/context/PortfolioContext";
+import LogoutButton from "./components/LogoutButton";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export const metadata: Metadata = {
   title: "My Portfolio",
@@ -17,6 +20,8 @@ const fetchPortfolioData = async () => {
 };
 
 const Layout = async ({ children }: { children: ReactNode }) => {
+
+  const session = await getServerSession(authOptions);
 
   const data = await fetchPortfolioData();
 
@@ -38,6 +43,7 @@ const Layout = async ({ children }: { children: ReactNode }) => {
           <a href="/">
             {data[0].name}
           </a>
+          {session && <LogoutButton />}
         </header>
         
         <main className="min-h-screen">{children}</main>
