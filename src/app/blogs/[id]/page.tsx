@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { blogPosts } from "@/app/blogs/page";
 import { ArrowLeft } from "lucide-react";
 import React from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { DeleteConfirmation } from "@/app/components/DeleteConfirmation";
 
 interface BlogPostProps {
     params: { id: string };
@@ -20,6 +23,7 @@ async function fetchBlogPost(id: string) {
 const BlogPost = async ({ params }: BlogPostProps) => {
     const {id} = await params;
     const post = await fetchBlogPost(id);
+    const session = await getServerSession(authOptions);
   
     if (!post) {
       notFound();
@@ -33,13 +37,23 @@ const BlogPost = async ({ params }: BlogPostProps) => {
         <p className="text-lg mb-6 text-justify">{post.content.split("\n").map((line, index) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p>
         
         {/* Back Button */}
-        <div className="flex justify-end mt-6">
-          <Link href="/blogs">
-            <span className="p-3 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition cursor-pointer flex items-center justify-center w-12 h-12">
-              <ArrowLeft size={24} />
-            </span>
-          </Link>
-        </div>
+        <div className="flex justify-between items-center mt-6">
+      {/* Edit Button - Visible only if user is authenticated */}
+      {session && (
+        <Link href={`/blogs/edit/${post.id}`}>
+          <button className="bg-yellow-500 text-white px-4 py-2 rounded shadow-md hover:bg-yellow-600 transition">
+            Edit
+          </button>
+        </Link>
+      )}
+      {session && <DeleteConfirmation postId={post.id} />}
+      {/* Back Button */}
+      <Link href="/blogs">
+        <span className="p-3 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 transition cursor-pointer flex items-center justify-center w-12 h-12">
+          <ArrowLeft size={24} />
+        </span>
+      </Link>
+    </div>
       </div>
     </div>
   );
