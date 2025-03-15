@@ -3,7 +3,12 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const portfolios = await prisma.portfolio.findMany();
+    const portfolios = await prisma.portfolio.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 1,
+    });
     return new Response(JSON.stringify(portfolios), {
       status: 200,
       headers: { "Content-Type": "application/json" },

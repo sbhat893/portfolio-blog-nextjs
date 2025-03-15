@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 // Fetch all blog posts
 export async function GET() {
@@ -14,63 +16,21 @@ export async function GET() {
 }
 
 // Create a new blog post
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { title, summary, content, author } = await req.json();
+
   try {
-    const { title, content, author } = await req.json(); // Ensure correct field names
-
-    if (!title || !content || !author) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    const newPost = await prisma.blogPost.create({
-      data: { 
-        title, 
-        content, 
-        author, 
-        createdAt: new Date(),
-      },
+    const newBlogPost = await prisma.blogPost.create({
+      data: { title, summary, content, author },
     });
 
-    return NextResponse.json(newPost, { status: 201 });
+    return NextResponse.json(newBlogPost, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to create blog post" }, { status: 500 });
-  }
-}
-
-
-// Update a blog post
-export async function PATCH(req: Request) {
-  try {
-    const { id, title, content } = await req.json();
-
-    if (!id || (!title && !content)) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    const updatedPost = await prisma.blogPost.update({
-      where: { id },
-      data: { title, content },
-    });
-
-    return NextResponse.json(updatedPost, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to update blog post" }, { status: 500 });
-  }
-}
-
-// Delete a blog post
-export async function DELETE(req: Request) {
-  try {
-    const { id } = await req.json();
-
-    if (!id) {
-      return NextResponse.json({ error: "Missing blog post ID" }, { status: 400 });
-    }
-
-    await prisma.blogPost.delete({ where: { id } });
-
-    return NextResponse.json({ message: "Blog post deleted" }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to delete blog post" }, { status: 500 });
   }
 }
