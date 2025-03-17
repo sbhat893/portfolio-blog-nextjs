@@ -6,6 +6,7 @@ import React from "react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { DeleteConfirmation } from "@/app/components/DeleteConfirmation";
+import CommentSection from "@/app/components/CommentSection";
 
 interface BlogPostProps {
     params: { id: string };
@@ -53,6 +54,9 @@ const BlogPost = async ({ params }: BlogPostProps) => {
           <ArrowLeft size={24} />
         </span>
       </Link>
+    </div>
+    <div className="mt-8">
+      <CommentSection blogPostId={post.id} />
     </div>
       </div>
     </div>
