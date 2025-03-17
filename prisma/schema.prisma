@@ -20,19 +20,29 @@ model Owner {
 }
 
 model Portfolio {
-  id          String  @id @default(uuid())
-  name        String
-  description String
+  id             String   @id @default(uuid())
+  name           String
+  description    String
   profilePicture String
-  cvPath      String
-  createdAt   DateTime @default(now())
+  cvPath         String
+  createdAt      DateTime @default(now())
 }
 
 model BlogPost {
-  id          String   @id @default(uuid())
-  title       String
-  summary     String
-  content     String
-  author      String
-  createdAt   DateTime @default(now())
+  id        String    @id @default(uuid())
+  title     String
+  summary   String
+  content   String
+  author    String
+  createdAt DateTime  @default(now())
+  Comment   Comment[]
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  email      String
+  content    String
+  createdAt  DateTime @default(now())
+  blogPost   BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  blogPostId String
 }
