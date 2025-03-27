@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
 
-export async function GET(request: Request, { params }: { params: { id?: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const {id} = await params;
   if (!id) {
     return NextResponse.json({ error: "Missing blog post ID" }, { status: 400 });
@@ -25,13 +25,13 @@ export async function GET(request: Request, { params }: { params: { id?: string 
 }
 
 // Update a blogpost
-export async function PATCH(req: NextRequest, context: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const {id} = await params;
   const { title, summary, content } = await req.json();
 
   if (!id || (!title && !content && !summary)) {
@@ -51,13 +51,13 @@ export async function PATCH(req: NextRequest, context: { params: { id: string } 
 }
 
 // Delete a blog post
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = context.params;
+  const {id} = await params;
 
   try {
     await prisma.blogPost.delete({ where: { id } });

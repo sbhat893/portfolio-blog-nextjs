@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { PortfolioProvider } from "@/context/PortfolioContext";
 import LogoutButton from "./components/LogoutButton";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
+import { authOptions } from "./utils/authOptions";
 
 export const metadata: Metadata = {
   title: "My Portfolio",

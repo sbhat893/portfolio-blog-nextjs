@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { blogPosts } from "@/app/blogs/page";
 import { ArrowLeft } from "lucide-react";
 import React from "react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/utils/authOptions";
 import { DeleteConfirmation } from "@/app/components/DeleteConfirmation";
 import CommentSection from "@/app/components/CommentSection";
 
@@ -21,7 +20,7 @@ async function fetchBlogPost(id: string) {
     return res.json();
 }
 
-const BlogPost = async ({ params }: BlogPostProps) => {
+const BlogPost = async ({ params }: { params: Promise<{ id: string }> }) => {
     const {id} = await params;
     const post = await fetchBlogPost(id);
     const session = await getServerSession(authOptions);
@@ -35,7 +34,7 @@ const BlogPost = async ({ params }: BlogPostProps) => {
       <div className="max-w-3xl bg-white p-8 shadow-lg rounded-lg">
         <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
         <p className="text-gray-600 mb-2">{post.date}</p>
-        <p className="text-lg mb-6 text-justify">{post.content.split("\n").map((line, index) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p>
+        <p className="text-lg mb-6 text-justify">{post.content.split("\n").map((line: number, index: number) => <React.Fragment key={index}>{line}<br/></React.Fragment>)}</p>
         
         {/* Back Button */}
         <div className="flex justify-between items-center mt-6">

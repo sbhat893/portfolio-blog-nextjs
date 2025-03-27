@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import DeleteCommentButton from "./DeleteCommentButton";
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "../utils/authOptions";
 
 interface CommentSectionProps {
   blogPostId: string;

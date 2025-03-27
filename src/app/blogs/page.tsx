@@ -10,7 +10,7 @@ type BlogPost = {
   summary: string;
 };
 
-export const blogPosts = [
+const blogPosts = [
     {
       id: uuidv4(),
       title: "My First Blog Post",
@@ -62,7 +62,7 @@ const Blogs = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-8">My Blog Posts</h1>
 
-        {blogPosts.length === 0 ? (
+        {posts.length === 0 ? (
           <p className="text-center text-lg text-gray-600">No posts available.</p>
         ) : (
           <div className="space-y-6">
