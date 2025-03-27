@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 // GET all comments for a specific blog post
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const {id} = await params;
   try {
     const comments = await prisma.comment.findMany({
-      where: { blogPostId: params.id },
+      where: { blogPostId: id },
       orderBy: { createdAt: "asc" },
     });
     return NextResponse.json(comments, { status: 200 });
@@ -15,8 +16,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // POST a new comment under a blog post
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-  
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const {id} = await params;
   try {    
     const { content, email } = await req.json();
     console.log("this works");
@@ -25,7 +26,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     }
     
     const newComment = await prisma.comment.create({
-      data: { email, content, blogPostId: params.id },
+      data: { email, content, blogPostId: id },
     });
     
     return NextResponse.json(newComment, { status: 201 });

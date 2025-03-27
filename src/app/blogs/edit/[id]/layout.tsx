@@ -1,7 +1,8 @@
 import AuthProvider from "@/context/AuthProvider";
 import { ReactNode } from "react";
 
-export default function Layout({ children, Session }: { children: ReactNode, Session: any }) {
+export default function Layout({ children }: { children: ReactNode }) {
+  var Session = undefined;
     return (
       <>
         <AuthProvider session={Session}>
